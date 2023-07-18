@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Weather App</title>
+  </head>
+  <body>
+    <div class="app_container">
+      <div class="search">
+        <input
+          type="text"
+          class="input"
+          spellcheck="false"
+          placeholder="Entrer votre ville"
+        />
+        <button>
+          <img src="/assets/search.png" alt="Icon de recherche" />
+        </button>
+      </div>
+
+      <div class="weather">
+        <img src="/assets/clouds.png" alt="" class="weather_icon" />
+        <div class="description">light rain</div>
+        <div class="feel">feel like</div>
+        <h1 class="temp">45&degC</h1>
+        <h2 class="ville">New York</h2>
+      </div>
+
+      <div class="details">
+        <div>
+          <img src="/assets/humidity.png" alt="" class="detail_igm" />
+          <section>
+            <h3 class="humidite">45%</h3>
+            <p class="humidite">humidite</p>
+          </section>
+        </div>
+        <div>
+          <img src="/assets/wind.png" alt="" class="detail_igm" />
+          <section>
+            <h3 class="vent">25km/h</h3>
+            <p>Vitesse du vent</p>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script>
+      const apiUrl =
+        'https://api.openweathermap.org/data/2.5/weather?&units=metric';
+      const myapi = '8f4700b54b2a919a86a66a2dd3575e64';
+      const inputValue = document.querySelector('input');
+      const searchButton = document.querySelector('button');
+      //const weatherImage = document.querySelector('.weather_icon') = 'assets/drizzle.png';
+
+      const getWeather = async (city) => {
+        const reponse = await fetch(apiUrl + `&q=${city}` + `&appid=${myapi}`);
+        const data = await reponse.json();
+        console.log(data);
+
+        const weatherConditon = data.weather[0].main;
+
+        if (weatherConditon === 'Rain') {
+          document.querySelector('.weather_icon').src = '/assets/rain.png';
+        } else if (weatherConditon === 'Clear') {
+          document.querySelector('.weather_icon').src = '/assets/clear.png';
+        } else if (weatherConditon === 'Clouds') {
+          document.querySelector('.weather_icon').src = '/assets/clouds.png';
+        } else if (weatherConditon === 'Drizzle') {
+          document.querySelector('.weather_icon').src = '/assets/drizzle.png';
+        } else if (weatherConditon === 'Snow') {
+          document.querySelector('.weather_icon').src = '/assets/snow.png';
+        } else if (weatherConditon === 'Mist') {
+          document.querySelector('.weather_icon').src = '/assets/mist.png';
+        } else {
+          return;
+        }
+
+        document.querySelector('.description').innerHTML =
+          data.weather[0].description;
+
+        document.querySelector('.feel').innerHTML = ` feels like
+          ${Math.round(data.main.feels_like)} &degC`;
+
+        document.querySelector('.temp').innerHTML =
+          Math.round(data.main.temp) + '&degC';
+        document.querySelector('.ville').innerHTML = data.name;
+
+        document.querySelector('.humidite').innerHTML = data.main.humidity;
+
+        document.querySelector('.vent').innerHTML = data.wind.speed + ' km/h';
+      };
+
+      searchButton.addEventListener('click', () => {
+        getWeather(inputValue.value);
+      });
+    </script>
+  </body>
+</html>
