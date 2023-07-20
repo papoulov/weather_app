@@ -46,6 +46,20 @@
       </div>
     </div>
     <script>
+      const googleApiUrl =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=newyork&types=(cities)';
+
+      const googleApiDetailsUrl =
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=';
+
+      const googleApiPhotosUrl =
+        'https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photoreference=';
+
+      //popular place in city
+      const popularPlaceRequest =
+        'https://maps.googleapis.com/maps/api/place/textsearch/json?query=popular%20place%20in%20';
+
+      const googleKey = 'AIzaSyBiim54dHtiINpR4TOIT-odV-2m8Bk7TvY';
       const apiUrl =
         'https://api.openweathermap.org/data/2.5/weather?&units=metric&lang=fr';
       const myapi = '8f4700b54b2a919a86a66a2dd3575e64';
@@ -54,11 +68,31 @@
       //const weatherImage = document.querySelector('.weather_icon') = 'assets/drizzle.png';
 
       const getWeather = async (city) => {
+        // fetching les donnees de climat
         const reponse = await fetch(apiUrl + `&q=${city}` + `&appid=${myapi}`);
-        const data = await reponse.json();
-        console.log(data);
+        const weaterData = await reponse.json();
 
-        const weatherConditon = data.weather[0].main;
+        //fetching les donnees google
+        try {
+          const reponseGoogle = await fetch(
+            popularPlaceRequest + inputValue.value + `&key=${googleKey}`
+          );
+          const jsonReponseGoogle = await reponseGoogle.json();
+          //console.log(jsonReponseGoogle.results[0].photos[0].photo_reference);
+
+          const photoReference =
+            jsonReponseGoogle.results[1].photos[0].photo_reference;
+
+          const reponsePhoto =
+            googleApiPhotosUrl + photoReference + `&key=${googleKey}`;
+          console.log(reponsePhoto);
+          document.querySelector('body').style.backgroundImage =
+            'url(' + reponsePhoto + ')';
+        } catch (err) {
+          console.log(err);
+        }
+
+        const weatherConditon = weaterData.weather[0].main;
 
         if (weatherConditon === 'Rain') {
           document.querySelector('.weather_icon').src = '/assets/rain.png';
@@ -77,18 +111,20 @@
         }
 
         document.querySelector('.description').innerHTML =
-          data.weather[0].description;
+          weaterData.weather[0].description;
 
         document.querySelector('.feel').innerHTML = ` feels like
-          ${Math.round(data.main.feels_like)} &degC`;
+          ${Math.round(weaterData.main.feels_like)} &degC`;
 
         document.querySelector('.temp').innerHTML =
-          Math.round(data.main.temp) + '&degC';
-        document.querySelector('.ville').innerHTML = data.name;
+          Math.round(weaterData.main.temp) + '&degC';
+        document.querySelector('.ville').innerHTML = weaterData.name;
 
-        document.querySelector('.humidite').innerHTML = data.main.humidity;
+        document.querySelector('.humidite').innerHTML =
+          weaterData.main.humidity;
 
-        document.querySelector('.vent').innerHTML = data.wind.speed + ' km/h';
+        document.querySelector('.vent').innerHTML =
+          weaterData.wind.speed + ' km/h';
       };
 
       searchButton.addEventListener('click', () => {

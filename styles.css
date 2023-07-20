@@ -9,6 +9,13 @@ body{
     place-items: center;
     background-color: #222;
     justify-content: center;
+
+    /*backgroung propeties*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+
 }
 
 .app_container{
@@ -18,7 +25,7 @@ max-width: 470px;
 color: #fff;
 margin: 100px auto;
 padding: 40px 35px;
-background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+background: linear-gradient(0deg, rgba(34,193,195,1) 0%, transparent, rgba(253,187,45,1) 100%);
 }
 
 .search{
